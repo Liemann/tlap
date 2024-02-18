@@ -23,12 +23,6 @@ int cmpfunc (const void * a, const void * b) {
    return ( *(int*)a - *(int*)b );
 }
 
-// int compGrade(const void * a, const void * b) {
-//   agent * agentA = (agent *) a;
-//   agent * agentB = (agent *) b;
-//   return (agentA->agentID - agentB->agentID);
-// }
-
 int main() {
   // Sort each agents monthly sales
   for(int i = 0; i < NUM_AGENTS; i++) {
