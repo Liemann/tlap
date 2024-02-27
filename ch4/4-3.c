@@ -10,7 +10,7 @@ int lenCh(arrayString str) {
   return len;
 }
 
-void append(arrayString str, char c) {
+arrayString append(arrayString str, char c) {
   int oldLen = lenCh(str);
   arrayString new = malloc((oldLen + 2) * sizeof(char));
   for(int i = 0; i < oldLen; i ++) {
@@ -18,30 +18,43 @@ void append(arrayString str, char c) {
   }
   new[oldLen] = c;
   new[oldLen + 1] = 0;
+  return new;
 }
 
 // If source is abcdabee, target is ab and replaceText is xyz, source becomes xyzcdxyzee
-void replaceString(arrayString source, arrayString target, arrayString replaceText) {
+arrayString replaceString(arrayString source, arrayString target, arrayString replaceText) {
   // Add start of index to be replaced
- arrayString replaceIndexes; 
+  arrayString replaceIndexes = malloc(sizeof(char)); 
+
   for(int i = 0; i < lenCh(source); i++) {
     int step = 0;
     while(source[i + step] == target[step] && step < lenCh(source) && step < lenCh(target)) {
       if(step == lenCh(target) - 1) {
         printf("%i\n",i);
-        append(replaceIndexes, i);
+        replaceIndexes = append(replaceIndexes, i + '0');
       }
       step++;
     }
   }
-  append(replaceIndexes, 0);
+  replaceIndexes = append(replaceIndexes, 0);
+  printf("Len of replaceIndexes: %i\n",lenCh(replaceIndexes));
+  for(int i = 0; i < lenCh(replaceIndexes); i++) {
+    printf("ReplaceIndexex: %c\n",replaceIndexes[i]);
+  }
   // Now all indexes that are the starting point of target in source should be in replaceIndexes
 //
   arrayString new = malloc((lenCh(replaceIndexes)*lenCh(replaceText) + (lenCh(source) - lenCh(target)*lenCh(replaceIndexes)) + 1) * sizeof(char));
+  printf("This is the len of the new array: %i\n",lenCh(replaceIndexes)*lenCh(replaceText) + (lenCh(source) - lenCh(target)*lenCh(replaceIndexes)) + 1);
+  printf("Target: %i\n",lenCh(target));
+  printf("Source: %i\n",lenCh(source));
+  printf("ReplaceText: %i\n",lenCh(replaceText));
+  printf("ReplaceIndexes: %i\n",lenCh(replaceIndexes));
+
+
   int count = 0;
   while(count < lenCh(source)) {
     for(int j = 0; j < lenCh(replaceIndexes); j++) {
-      if(count == replaceIndexes[j]) {
+      if(count == replaceIndexes[j] - '0') {
         for(int i = 0; i < lenCh(replaceText); i++) {
           new[count+i] = replaceText[i];
         }
@@ -51,6 +64,8 @@ void replaceString(arrayString source, arrayString target, arrayString replaceTe
     }
     count++;
   }
+  new[count+1] = 0;
+  return new;
 }
 
 int main() {
@@ -83,7 +98,7 @@ int main() {
   }
   printf("\nAnd the substring is: \n");
 
-  replaceString(str, target, replaceText);
+  str = replaceString(str, target, replaceText);
 
   for(int i = 0; i < lenCh(str); i++) {
     printf("%c",str[i]);
