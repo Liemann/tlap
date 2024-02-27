@@ -21,6 +21,20 @@ arrayString append(arrayString str, char c) {
   return new;
 }
 
+arrayString concat(arrayString s1, arrayString s2) {
+  int s1len = lenCh(s1);
+  int s2len = lenCh(s2);
+  arrayString new = malloc((s1len+s2len+1) * sizeof(char));
+  for(int i = 0; i < s1len; i++) {
+    new[i] = s1[i];
+  }
+  for(int i = 0; i < s2len; i++) {
+    new[s1len+i] = s2[i];
+  }
+  new[s1len+s2len] = 0;
+  return new;
+}
+
 // If source is abcdabee, target is ab and replaceText is xyz, source becomes xyzcdxyzee
 arrayString replaceString(arrayString source, arrayString target, arrayString replaceText) {
   // Add start of index to be replaced
@@ -42,29 +56,24 @@ arrayString replaceString(arrayString source, arrayString target, arrayString re
     printf("ReplaceIndexex: %c\n",replaceIndexes[i]);
   }
   // Now all indexes that are the starting point of target in source should be in replaceIndexes
-//
-  arrayString new = malloc((lenCh(replaceIndexes)*lenCh(replaceText) + (lenCh(source) - lenCh(target)*lenCh(replaceIndexes)) + 1) * sizeof(char));
-  printf("This is the len of the new array: %i\n",lenCh(replaceIndexes)*lenCh(replaceText) + (lenCh(source) - lenCh(target)*lenCh(replaceIndexes)) + 1);
-  printf("Target: %i\n",lenCh(target));
-  printf("Source: %i\n",lenCh(source));
-  printf("ReplaceText: %i\n",lenCh(replaceText));
-  printf("ReplaceIndexes: %i\n",lenCh(replaceIndexes));
-
-
+  arrayString new = malloc(sizeof(char));
   int count = 0;
   while(count < lenCh(source)) {
     for(int j = 0; j < lenCh(replaceIndexes); j++) {
       if(count == replaceIndexes[j] - '0') {
-        for(int i = 0; i < lenCh(replaceText); i++) {
-          new[count+i] = replaceText[i];
-        }
+        new = concat(new, replaceText);
+        count += lenCh(target);
       } else {
-        new[count] = source[count];
+        arrayString ch = malloc(2*sizeof(char));
+        ch[0] = source[count];
+        ch[1] = 0;
+        new = concat(new, ch);
+        free(ch);
+        count++;
       }
     }
-    count++;
+    
   }
-  new[count+1] = 0;
   return new;
 }
 
@@ -79,6 +88,17 @@ int main() {
   str[6] = 'e';
   str[7] = 'e';
   str[8] = 0;
+  
+  arrayString str2 = malloc(9 * sizeof(char));
+  str2[0] = 'a';
+  str2[1] = 'b';
+  str2[2] = 'a';
+  str2[3] = 'b';
+  str2[4] = 'a';
+  str2[5] = 'b';
+  str2[6] = 'a';
+  str2[7] = 'b';
+  str2[8] = 0;
   
   arrayString target = malloc(3 * sizeof(char));
   target[0] =  'a';
@@ -98,7 +118,7 @@ int main() {
   }
   printf("\nAnd the substring is: \n");
 
-  str = replaceString(str, target, replaceText);
+  str = replaceString(str2, target, replaceText);
 
   for(int i = 0; i < lenCh(str); i++) {
     printf("%c",str[i]);
